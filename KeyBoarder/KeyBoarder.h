@@ -27,6 +27,8 @@ public:
 	void OpenWare(TNotifyUI& msg);						//
 	void AddTrayIcon();
 	int KillProcess(TCHAR Kill_Name[]);
+	string OpenFileBrowse();
+	string TCHAR2STRING(TCHAR *STR);//TCHARתstring
 public:
 	CPaintManagerUI		m_PaintManager;
 	CControlUI*			m_pHelloBtn;
@@ -35,4 +37,5 @@ public:
 	vector<listInfo>	m_vecInfo;
 	HANDLE				m_handle;
 	NOTIFYICONDATA		m_trayIcon;
+	string				m_sFilePath;
 };

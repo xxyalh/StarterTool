@@ -3,20 +3,27 @@
 #include "MainWnd.h"
 #include "Resource.h"
 #include "Listmenu.h"
+#include <Commdlg.h>
 HWND g_hPareat = NULL;
 MainWnd::MainWnd()
 {
 	m_pRoot = NULL;
 	m_pHelloBtn = NULL;
+	m_sFilePath = "";
 }
+
 DWORD WINAPI OpenAllWare(LPVOID pParam)
 {
 	MainWnd* pWare = (MainWnd*)pParam;
-	ShellExecute(g_hPareat, _T("open"), "D:\\software\\perfectworldarena\\完美世界竞技平台.exe", "", "", SW_SHOWNORMAL);
-	ShellExecute(g_hPareat, _T("open"), "C:\\SoftWare\\WeChat\\WeChat.exe", "", "", SW_SHOWNORMAL);
-	ShellExecute(g_hPareat, _T("open"), "C:\\SoftWare\\QQMusic\\QQMusic.exe", "", "", SW_SHOWNORMAL);
-	ShellExecute(g_hPareat, _T("open"), "D:\\software\\VS2013\\Common7\\IDE\\devenv.exe", "", "", SW_SHOWNORMAL);
-	ShellExecute(g_hPareat, _T("open"), "D:\\SteamLibrary\\steamapps\\common\\Apex Legends\\r5apex.exe", "", "", SW_SHOWNORMAL);
+	if (!pWare->m_pWareOpen->IsSelected())
+	{
+		ShellExecute(g_hPareat, _T("open"), "D:\\software\\perfectworldarena\\完美世界竞技平台.exe", "", "", SW_SHOWNORMAL);
+		ShellExecute(g_hPareat, _T("open"), "C:\\SoftWare\\WeChat\\WeChat.exe", "", "", SW_SHOWNORMAL);
+		ShellExecute(g_hPareat, _T("open"), "C:\\SoftWare\\QQMusic\\QQMusic.exe", "", "", SW_SHOWNORMAL);
+		ShellExecute(g_hPareat, _T("open"), "D:\\software\\VS2013\\Common7\\IDE\\devenv.exe", "", "", SW_SHOWNORMAL);
+		ShellExecute(g_hPareat, _T("open"), "D:\\SteamLibrary\\steamapps\\common\\Apex Legends\\r5apex.exe", "", "", SW_SHOWNORMAL);
+	}
+	
 	return 0;
 }
 
@@ -96,6 +103,10 @@ void MainWnd::Notify(TNotifyUI & msg)
 		{
 			CloseHandle(CreateThread(NULL, 0, OpenAllWare, this, 0, NULL));
 		}
+		else if (msg.pSender->GetName() == _T("AddListBtn"))
+		{
+			m_sFilePath = OpenFileBrowse();
+		}
 	}
 	else if (msg.sType == DUI_MSGTYPE_MENU)
 	{
@@ -105,6 +116,45 @@ void MainWnd::Notify(TNotifyUI & msg)
 		pMenu->Init(pt);
 		pMenu->ShowWindow(TRUE);
 	}
+}
+//到线程内pao
+string MainWnd::OpenFileBrowse()
+{
+	OPENFILENAME ofn;			// 公共对话框结构
+ 	TCHAR szFile[MAX_PATH];		// 保存获取文件名称的缓冲区   
+ 	ZeroMemory(&ofn, sizeof(OPENFILENAME));
+ 	ofn.lStructSize = sizeof(OPENFILENAME);
+ 	ofn.hwndOwner = NULL;
+ 	ofn.lpstrFile = szFile;
+ 	ofn.lpstrFile[0] = '\0';
+ 	ofn.nMaxFile = sizeof(szFile);
+ 	ofn.lpstrFilter = "All\0*.*\0Text\0*.TXT\0Image\0*.PNG;*.JPG\0Exe\0*.exe\0"; //过滤规则
+ 	ofn.nFilterIndex = 1;
+ 	ofn.lpstrFileTitle = NULL;
+ 	ofn.nMaxFileTitle = 0;
+ 	ofn.lpstrInitialDir = "C:\\Program Files";	//指定默认路径
+ 	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+ 	string sFolder = "";
+ 	if (GetOpenFileName(&ofn))
+ 	{
+ 		//sFolder = TCHAR2STRING(szFile);
+ 		return sFolder;
+ 	}
+ 	else
+ 	{
+ 		return "";
+ 	}
+  
+}
+ 
+string MainWnd::TCHAR2STRING(TCHAR *STR)
+{
+	int iLen = WideCharToMultiByte(CP_ACP, 0, (LPCWCH)STR, -1, NULL, 0, NULL, NULL);
+	char* chRtn = new char[iLen*sizeof(char)];
+	WideCharToMultiByte(CP_ACP, 0, (LPCWCH)STR, -1, chRtn, iLen, NULL, NULL);
+	std::string str(chRtn);
+	delete chRtn;
+	return str;
 }
 
 void MainWnd::OpenWare(TNotifyUI& msg)
@@ -259,7 +309,7 @@ void MainWnd::SoftWareList()
 			pLab->SetText(m_vecInfo[i].text.c_str());
 		}
 		pLab = NULL;
-		pListElement->SetFixedWidth(200);
+		pListElement->SetFixedWidth(250);
 		pListElement->SetFixedHeight(40);
 		if (!WareList->AddAt(pListElement, i))
 		{
@@ -280,6 +330,4 @@ void MainWnd::InitWindow()
 
 	m_pWareOpen = static_cast<COptionUI*>(m_PaintManager.FindControl(_T("wareOpen")));
 	g_hPareat = GetHWND();
-
-	
 }
