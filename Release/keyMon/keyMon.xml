@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Window size="250,500" sizebox="4,4,6,6" caption="0,0,0,30" mininfo="250,500" maxinfo="250,500" roundcorner="6,6">
+	<!-- 窗口的初始尺寸 -->
+	<Font name="微软雅黑" />
+	<Font name="微软雅黑" size="14" />
+	<Font name="微软雅黑" size="9" />
+	<VerticalLayout width="250" height="500">
+		<HorizontalLayout float="true" pos="0,0,0,0" width="250" height="500" bkcolor="#ffffffff">
+			<Control float="true" pos="5,5,0,0" width="54" height="54" bkimage="keyMon\icon1.png" />
+			<Button name="AllSelect" float="true" pos="216,50,246,62" width="30" height="12" font="1" text="全选" textcolor="#ff000000" texthotcolor="#ff00FF00" />
+			<List name="softwareList" float="true" pos="0,65,0,0" width="250" height="449" itemtextcolor="#ffffffff" itemhotbkcolor="#FFE9F5FF" itemdisabledtextcolor="#FFCCCCCC" vscrollbar="true" hscrollbar="false" bordersize="0" font="1" bkcolor="#ffE0E0E0" headerbkimage="keyMon\\arm_L.png" menu="true">
+				<ListHeader>
+					<ListHeaderItem text="WeChat:aaron820ht" width="250" minwidth="250" dragable="false" font="1" textcolor="#ff000000" />
+				</ListHeader>
+			</List>
+			<Label name="myName" float="true" text="启动器" align="center" pos="60,26,160,46" width="100" height="20" bkcolor="#ffffffff" textcolor="#ff000000" font="1" />
+		</HorizontalLayout>
+	</VerticalLayout>
+</Window>

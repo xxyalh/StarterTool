@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Window size="50,60" sizebox="4,4,6,6" caption="0,0,0,30">
+	<Font name="微软雅黑" />
+	<Font name="微软雅黑" size="14" />
+	<Font name="微软雅黑" size="9" />
+	
+    <VerticalLayout width="50" height="30" bkcolor="#ff000000" bordersize="1" bordercolor="#ff808080">
+		<Button name="LockBtn" float="true" pos="0,0,0,0" width="50" height="30" font="1" text="锁定" align="center" textcolor="#ffffffff" bordersize="1" bordercolor="#ff808080"/>
+        <Button name="UnLockBtn" float="true" pos="0,30,0,0" width="50" height="30" font="1" text="解锁" align="center" textcolor="#ffffffff"/>
+	</VerticalLayout>
+
+</Window>
