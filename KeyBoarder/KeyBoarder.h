@@ -5,6 +5,7 @@
 #include <atlstr.h>
 #include  "shellapi.h "
 #include <Tlhelp32.h>
+#include "ReadIni.h"
 struct listInfo
 {
 	string ico;
@@ -22,12 +23,12 @@ public:
 	virtual CDuiString GetSkinFile();
 	virtual CDuiString GetSkinFolder();
 	virtual LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam);
-	virtual void InitWindow();
+	void InitWindow();
 	void SoftWareList();					//应用列表
 	void OpenWare(TNotifyUI& msg);						//
 	void AddTrayIcon();
 	int KillProcess(TCHAR Kill_Name[]);
-	string OpenFileBrowse();
+	void ReadIniFile();						//读取ini文件
 	string TCHAR2STRING(TCHAR *STR);//TCHAR转string
 public:
 	CPaintManagerUI		m_PaintManager;
@@ -36,6 +37,8 @@ public:
 	COptionUI*			m_pWareOpen;
 	vector<listInfo>	m_vecInfo;
 	HANDLE				m_handle;
+	HANDLE				m_hList;
 	NOTIFYICONDATA		m_trayIcon;
 	string				m_sFilePath;
+	vector<string>      m_VecPath;
 };
