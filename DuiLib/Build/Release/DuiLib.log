@@ -1,0 +1,49 @@
+﻿生成启动时间为 2022/9/21 20:44:49。
+     1>项目“D:\Code\KeyboardMonitoning\DuiLib\DuiLib.vcxproj”在节点 2 上(Build 个目标)。
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppBuild.targets(1186,5): warning MSB8012: TargetPath(D:\Code\KeyboardMonitoning\DuiLib\.\Build\Release\DuiLib.dll) does not match the Linker's OutputFile property value (D:\Code\KeyboardMonitoning\bin\DuiLib.dll). This may cause your project to build incorrectly. To correct this, please make sure that $(OutDir), $(TargetName) and $(TargetExt) property values match the value specified in %(Link.OutputFile).
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppBuild.targets(1190,5): warning MSB8030: The linker switch "Minimum Required Version" requires "SubSystem" to be set.  Without "SubSystem", the "Minimum Required Version" would not be passed to linker and could prevent to the output binary from running on older Operating Systems.
+     1>Link:
+         D:\software\VS2013\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"../bin/DuiLib.dll" /INCREMENTAL:NO /NOLOGO /LIBPATH:.\lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST:NO /PDB:".\Build\Release\DuiLib.pdb" /TLBID:1 /BASE:"0x11000000" /DYNAMICBASE /NXCOMPAT /IMPLIB:"../Lib/DuiLib.lib" /MACHINE:X86 /SAFESEH /DLL .\Build\Release\UITreeView.obj
+         .\Build\Release\StdAfx.obj
+         .\Build\Release\UIlib.obj
+         .\Build\Release\WinImplBase.obj
+         .\Build\Release\stb_image.obj
+         .\Build\Release\UIDelegate.obj
+         .\Build\Release\Utils.obj
+         .\Build\Release\WndShadow.obj
+         .\Build\Release\XUnzip.obj
+         .\Build\Release\UIBase.obj
+         .\Build\Release\UIContainer.obj
+         .\Build\Release\UIControl.obj
+         .\Build\Release\UIDlgBuilder.obj
+         .\Build\Release\UIManager.obj
+         .\Build\Release\UIMarkup.obj
+         .\Build\Release\UIRender.obj
+         .\Build\Release\UIChildLayout.obj
+         .\Build\Release\UIHorizontalLayout.obj
+         .\Build\Release\UITabLayout.obj
+         .\Build\Release\UITileLayout.obj
+         .\Build\Release\UIVerticalLayout.obj
+         .\Build\Release\UIActiveX.obj
+         .\Build\Release\UIButton.obj
+         .\Build\Release\UICheckBox.obj
+         .\Build\Release\UICombo.obj
+         .\Build\Release\UIDateTime.obj
+         .\Build\Release\UIEdit.obj
+         .\Build\Release\UIGifAnim.obj
+         .\Build\Release\UILabel.obj
+         .\Build\Release\UIList.obj
+         .\Build\Release\UIOption.obj
+         .\Build\Release\UIProgress.obj
+         .\Build\Release\UIRichEdit.obj
+         .\Build\Release\UIScrollBar.obj
+         .\Build\Release\UISlider.obj
+         .\Build\Release\UIText.obj
+         .\Build\Release\UIWebBrowser.obj
+            正在创建库 ../Lib/DuiLib.lib 和对象 ../Lib/DuiLib.exp
+         DuiLib.vcxproj -> D:\Code\KeyboardMonitoning\DuiLib\.\Build\Release\DuiLib.dll
+     1>已完成生成项目“D:\Code\KeyboardMonitoning\DuiLib\DuiLib.vcxproj”(Build 个目标)的操作。
+
+生成成功。
+
+已用时间 00:00:00.43
