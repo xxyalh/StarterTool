@@ -3,20 +3,34 @@
 #include "MainWnd.h"
 #include "Resource.h"
 #include "Listmenu.h"
+#include <Commdlg.h>
 HWND g_hPareat = NULL;
 MainWnd::MainWnd()
 {
 	m_pRoot = NULL;
 	m_pHelloBtn = NULL;
+	m_sFilePath = "";
 }
+
+DWORD WINAPI ReadIniThread(LPVOID pParam)
+{
+	MainWnd* pRead = (MainWnd*)pParam;
+	pRead->ReadIniFile();
+	return 0;
+}
+
 DWORD WINAPI OpenAllWare(LPVOID pParam)
 {
 	MainWnd* pWare = (MainWnd*)pParam;
-	ShellExecute(g_hPareat, _T("open"), "D:\\software\\perfectworldarena\\完美世界竞技平台.exe", "", "", SW_SHOWNORMAL);
-	ShellExecute(g_hPareat, _T("open"), "C:\\SoftWare\\WeChat\\WeChat.exe", "", "", SW_SHOWNORMAL);
-	ShellExecute(g_hPareat, _T("open"), "C:\\SoftWare\\QQMusic\\QQMusic.exe", "", "", SW_SHOWNORMAL);
-	ShellExecute(g_hPareat, _T("open"), "D:\\software\\VS2013\\Common7\\IDE\\devenv.exe", "", "", SW_SHOWNORMAL);
-	ShellExecute(g_hPareat, _T("open"), "D:\\SteamLibrary\\steamapps\\common\\Apex Legends\\r5apex.exe", "", "", SW_SHOWNORMAL);
+	if (!pWare->m_pWareOpen->IsSelected())
+	{
+		ShellExecute(g_hPareat, _T("open"), "D:\\software\\perfectworldarena\\完美世界竞技平台.exe", "", "", SW_SHOWNORMAL);
+		ShellExecute(g_hPareat, _T("open"), "C:\\SoftWare\\WeChat\\WeChat.exe", "", "", SW_SHOWNORMAL);
+		ShellExecute(g_hPareat, _T("open"), "C:\\SoftWare\\QQMusic\\QQMusic.exe", "", "", SW_SHOWNORMAL);
+		ShellExecute(g_hPareat, _T("open"), "D:\\software\\VS2013\\Common7\\IDE\\devenv.exe", "", "", SW_SHOWNORMAL);
+		ShellExecute(g_hPareat, _T("open"), "D:\\SteamLibrary\\steamapps\\common\\Apex Legends\\r5apex.exe", "", "", SW_SHOWNORMAL);
+	}
+	
 	return 0;
 }
 
@@ -30,7 +44,8 @@ LRESULT MainWnd::OnTrayIcon(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHand
 	}
 	else if (lParam == WM_RBUTTONDOWN)
 	{
-		POINT pt; GetCursorPos(&pt);
+		POINT pt; 
+		GetCursorPos(&pt);
 		SetForegroundWindow(m_hWnd);
 		HMENU hMenu;
 		hMenu = CreatePopupMenu();
@@ -70,6 +85,39 @@ int MainWnd::KillProcess(TCHAR Kill_Name[])
 	CloseHandle(hSnapshort);
 	return 0;
 }
+DWORD WINAPI OpenFileBrowse(LPVOID pParam)
+{
+	MainWnd* pPath = (MainWnd*)pParam;
+	if (pPath->m_VecPath.size() > 0)
+	{
+		pPath->m_VecPath.clear();
+	}
+	OPENFILENAME ofn;			// 公共对话框结构
+	TCHAR szFile[MAX_PATH];		// 保存获取文件名称的缓冲区   
+	ZeroMemory(&ofn, sizeof(OPENFILENAME));
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.hwndOwner = NULL;
+	ofn.lpstrFile = szFile;
+	ofn.lpstrFile[0] = '\0';
+	ofn.nMaxFile = sizeof(szFile);
+	//ofn.lpstrFilter = "Image\0*.PNG;*.JPG\0Exe\0*.exe\0"; //过滤规则
+	ofn.lpstrFilter = "Exe\0*.exe\0"; //过滤规则
+	ofn.nFilterIndex = 1;
+	ofn.lpstrFileTitle = NULL;
+	ofn.nMaxFileTitle = 0;
+	ofn.lpstrInitialDir = "C:\\Program Files";	//指定默认路径
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+	if (GetOpenFileName(&ofn))
+	{
+		string sFilePath = pPath->TCHAR2STRING(szFile);
+		pPath->m_VecPath.push_back(sFilePath);
+		return 0;
+	}
+	else
+	{
+		return -1;
+	}
+}
 void MainWnd::Notify(TNotifyUI & msg)
 {
 	if (msg.sType == _T("click"))
@@ -96,6 +144,10 @@ void MainWnd::Notify(TNotifyUI & msg)
 		{
 			CloseHandle(CreateThread(NULL, 0, OpenAllWare, this, 0, NULL));
 		}
+		else if (msg.pSender->GetName() == _T("AddListBtn"))
+		{
+			CloseHandle(CreateThread(NULL, 0, OpenFileBrowse, this, 0, NULL));
+		}
 	}
 	else if (msg.sType == DUI_MSGTYPE_MENU)
 	{
@@ -105,6 +157,26 @@ void MainWnd::Notify(TNotifyUI & msg)
 		pMenu->Init(pt);
 		pMenu->ShowWindow(TRUE);
 	}
+}
+
+ 
+string MainWnd::TCHAR2STRING(TCHAR *STR)
+{
+	int iLen = WideCharToMultiByte(CP_ACP, 0, (LPCWCH)STR, -1, NULL, 0, NULL, NULL);
+	char* chRtn = new char[iLen*sizeof(char)];
+	WideCharToMultiByte(CP_ACP, 0, (LPCWCH)STR, -1, chRtn, iLen, NULL, NULL);
+	std::string str(chRtn);
+	delete chRtn;
+	return str;
+}
+void MainWnd::ReadIniFile()
+{
+	CReadIni* pR = new CReadIni;
+	pR->ReadINI("Setting.ini");
+	//pR->SetValue("path", "first", "woshidiyi");
+	string se = pR->Travel("path","first");
+	//MessageBox(NULL, se.c_str(), NULL, 0);
+	pR->WriteINI("Setting.ini");
 }
 
 void MainWnd::OpenWare(TNotifyUI& msg)
@@ -167,7 +239,6 @@ DuiLib::CDuiString MainWnd::GetSkinFolder()
 {
 	return _T("keyMon");
 }
-
 LRESULT MainWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	LRESULT lRes = 0;
@@ -209,6 +280,7 @@ LRESULT MainWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 DWORD WINAPI VecInfoInit(LPVOID pParam)
 {
 	MainWnd* pInit = (MainWnd*)pParam;
+	WaitForSingleObject(pInit->m_handle, INFINITE);
 	listInfo info;
 	info.ico = "keyMon\\perfect.png";
 	info.text = "完美世界竞技平台.exe";
@@ -229,7 +301,7 @@ DWORD WINAPI VecInfoInit(LPVOID pParam)
 }
 void MainWnd::SoftWareList()
 {
-	WaitForSingleObject(m_handle, INFINITE);
+	WaitForSingleObject(m_hList, INFINITE);
 	CListUI* WareList = static_cast<CListUI*>(m_PaintManager.FindControl(_T("softwareList")));
 	if (NULL == WareList)
 		return;
@@ -259,7 +331,7 @@ void MainWnd::SoftWareList()
 			pLab->SetText(m_vecInfo[i].text.c_str());
 		}
 		pLab = NULL;
-		pListElement->SetFixedWidth(200);
+		pListElement->SetFixedWidth(250);
 		pListElement->SetFixedHeight(40);
 		if (!WareList->AddAt(pListElement, i))
 		{
@@ -274,12 +346,12 @@ void MainWnd::InitWindow()
 {
 	SetProp(m_hWnd, _T("MainWnd"), (HANDLE)1);
 	SetIcon(IDI_WARE_ICON);
+
 	AddTrayIcon();
-	m_handle = CreateThread(NULL, 0, VecInfoInit, this, 0, NULL);
+	m_handle = CreateThread(NULL, 0, ReadIniThread, this, 0, NULL);
+	m_hList = CreateThread(NULL, 0, VecInfoInit, this, 0, NULL);
 	SoftWareList();
 
 	m_pWareOpen = static_cast<COptionUI*>(m_PaintManager.FindControl(_T("wareOpen")));
 	g_hPareat = GetHWND();
-
-	
 }
