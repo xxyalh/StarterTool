@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Window size="335,180" sizebox="4,4,6,6" caption="0,0,0,30" mininfo="335,180" maxinfo="335,180" roundcorner="6,6">
+	<!-- 窗口的初始尺寸 -->
+	<Font name="微软雅黑" size="18" />
+	<Font name="微软雅黑" size="14" />
+	<Font name="微软雅黑" size="9" />
+	<VerticalLayout width="335" height="180" bkcolor="#ffffffff">
+		<Label name="HintLab" float="true" pos="54,55,312,103" width="258" height="48" font="0" textcolor="#ff000000" text="提 示：请 选 择 exe 所 需 要 的 图 标" />
+		<Button name="configBtn" float="true" pos="117,119,212,151" width="95" height="32" font="1" textcolor="#ffffffff" bkcolor="#ff1E90FF" borderround="5,5" text="确定" />
+		<Button name="exitBtn" float="true" pos="291,12,316,37" width="25" height="25" borderround="6,6" normalimage="keyMon\exitico.png" enabled="false"/>
+	</VerticalLayout>
+</Window>

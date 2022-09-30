@@ -192,23 +192,40 @@ vector<ININode>::size_type CReadIni::SetValue(string root, string key, string va
 // 函数说明:        遍历打印INI文件
 // 返 回 值:       void
 //************************************************************************
-string CReadIni::Travel(string sGroup, string sValue)
+string CReadIni::Travel()
 {
 	for (map<string, SubNode>::iterator itr = this->map_ini.begin(); itr != this->map_ini.end(); ++itr)
 	{
 		//root
 		//cout << "[" << itr->first << "]" << endl;
-		if (strcmp(sGroup.c_str(), itr->first.c_str()) == 0)
-		{
+		//if (strcmp(sGroup.c_str(), itr->first.c_str()) == 0)
+		//{
 			for (map<string, string>::iterator itr1 = itr->second.sub_node.begin(); itr1 != itr->second.sub_node.end(); ++itr1)
 			{
-				if (strcmp(itr1->first.c_str(), sValue.c_str()) == 0)
-				{
+				//if (strcmp(itr1->first.c_str(), sValue.c_str()) == 0)
+				//{
 					return itr1->second;
-				}
+				//}
 			}
-		}
+		//}
 		
 	}
 	return "";
+}
+int CReadIni::GetValueCount(string sGroup)
+{
+	map<string, string>::iterator itr1;
+	count = 0;
+	for (map<string, SubNode>::iterator itr = this->map_ini.begin(); itr != this->map_ini.end(); ++itr)
+	{
+		if (strcmp(sGroup.c_str(), itr->first.c_str()) == 0)
+		{
+			for (itr1 = itr->second.sub_node.begin(); itr1 != itr->second.sub_node.end(); ++itr1)
+			{
+				++count;
+			}
+		}
+	}
+	return count;
+	
 }

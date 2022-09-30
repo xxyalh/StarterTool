@@ -28,8 +28,12 @@ public:
 	void OpenWare(TNotifyUI& msg);						//
 	void AddTrayIcon();
 	int KillProcess(TCHAR Kill_Name[]);
-	void ReadIniFile();						//读取ini文件
+	void WriteIniFile();						//读取ini文件
+	void VecInfoInit();						//初始化数组
+	void ReadIniFile();	
 	string TCHAR2STRING(TCHAR *STR);//TCHAR转string
+private:
+	static DWORD WINAPI SoftWareList(LPVOID pParam);
 public:
 	CPaintManagerUI		m_PaintManager;
 	CControlUI*			m_pHelloBtn;
@@ -37,8 +41,11 @@ public:
 	COptionUI*			m_pWareOpen;
 	vector<listInfo>	m_vecInfo;
 	HANDLE				m_handle;
-	HANDLE				m_hList;
 	NOTIFYICONDATA		m_trayIcon;
 	string				m_sFilePath;
-	vector<string>      m_VecPath;
+	vector<string>      m_VecPath;		//exe路径
+	vector<string>		m_VecIco;		//ico路径
+	vector<string>		m_sExeName;		//exe名字
+	CReadIni*			m_pReadIni;
+	CListUI*			m_pWareList;
 };

@@ -46,7 +46,10 @@ public:
 	vector<ININode>::size_type SetValue(string root, string key, string value);   //设置根结点和键获取值
 	int WriteINI(string path);          //写入INI文件
 	void Clear(){ map_ini.clear(); }    //清空
-	string Travel(string sGroup, string sValue);                     //遍历打印INI文件
+	string Travel();                     //遍历打印INI文件
+	int GetValueCount(string sGroup);
+	
 private:
 	map<string, SubNode> map_ini;     //INI文件内容的存储变量
+	int count;						//返回键的数量
 };
