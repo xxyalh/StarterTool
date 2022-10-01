@@ -23,15 +23,15 @@ public:
 	virtual CDuiString GetSkinFile();
 	virtual CDuiString GetSkinFolder();
 	virtual LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam);
-	void InitWindow();
-	void SoftWareList();					//应用列表
-	void OpenWare(TNotifyUI& msg);						//
-	void AddTrayIcon();
-	int KillProcess(TCHAR Kill_Name[]);
-	void WriteIniFile();						//读取ini文件
-	void VecInfoInit();						//初始化数组
-	void ReadIniFile();	
-	string TCHAR2STRING(TCHAR *STR);//TCHAR转string
+	void		InitWindow();
+	void		SoftWareList();						//应用列表
+	void		OpenWare(TNotifyUI& msg);				//
+	void		AddTrayIcon();
+	int			KillProcess(TCHAR Kill_Name[]);
+	void		WriteIniFile();						//读取ini文件
+	void		VecInfoInit();							//初始化数组
+	void		WriteIniSelect();					
+	string		TCHAR2STRING(TCHAR *STR);//TCHAR转string
 private:
 	static DWORD WINAPI SoftWareList(LPVOID pParam);
 public:
@@ -46,6 +46,9 @@ public:
 	vector<string>      m_VecPath;		//exe路径
 	vector<string>		m_VecIco;		//ico路径
 	vector<string>		m_sExeName;		//exe名字
+	vector<string>		m_sDynamAdd;	//动态添加缓存
 	CReadIni*			m_pReadIni;
 	CListUI*			m_pWareList;
+	int					m_sCountPath;		//ini路径数量
+	int					m_sCountIco;		//ini文件数量
 };

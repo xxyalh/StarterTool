@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "ReadIni.h"
 #define INIDEBUG
 
@@ -12,13 +12,13 @@ CReadIni::~CReadIni()
 }
 
 //************************************************************************
-// º¯ÊıÃû³Æ:        TrimString
-// ·ÃÎÊÈ¨ÏŞ:        public
-// ´´½¨ÈÕÆÚ:        2017/01/05
-// ´´ ½¨ ÈË:      
-// º¯ÊıËµÃ÷:        È¥³ı¿Õ¸ñ
-// º¯Êı²ÎÊı:    string & str    ÊäÈëµÄ×Ö·û´®
-// ·µ »Ø Öµ:       std::string &   ½á¹û×Ö·û´®
+// å‡½æ•°åç§°:        TrimString
+// è®¿é—®æƒé™:        public
+// åˆ›å»ºæ—¥æœŸ:        2017/01/05
+// åˆ› å»º äºº:      
+// å‡½æ•°è¯´æ˜:        å»é™¤ç©ºæ ¼
+// å‡½æ•°å‚æ•°:    string & str    è¾“å…¥çš„å­—ç¬¦ä¸²
+// è¿” å› å€¼:       std::string &   ç»“æœå­—ç¬¦ä¸²
 //************************************************************************
 string &TrimString(string &str)
 {
@@ -28,14 +28,37 @@ string &TrimString(string &str)
 	return str;
 }
 
+
+string CReadIni::UTF8ToGB(const char* str)
+{
+	std::string result;
+	WCHAR *strSrc;
+	LPSTR szRes;
+
+	//è·å¾—ä¸´æ—¶å˜é‡çš„å¤§å°
+	int i = MultiByteToWideChar(CP_UTF8, 0, str, -1, NULL, 0);
+	strSrc = new WCHAR[i + 1];
+	MultiByteToWideChar(CP_UTF8, 0, str, -1, strSrc, i);
+
+	//è·å¾—ä¸´æ—¶å˜é‡çš„å¤§å°
+	i = WideCharToMultiByte(CP_ACP, 0, strSrc, -1, NULL, 0, NULL, NULL);
+	szRes = new CHAR[i + 1];
+	WideCharToMultiByte(CP_ACP, 0, strSrc, -1, szRes, i, NULL, NULL);
+
+	result = szRes;
+	delete[]strSrc;
+	delete[]szRes;
+
+	return result;
+}
 //************************************************************************
-// º¯ÊıÃû³Æ:        ReadINI
-// ·ÃÎÊÈ¨ÏŞ:        public
-// ´´½¨ÈÕÆÚ:        2017/01/05
-// ´´ ½¨ ÈË:      
-// º¯ÊıËµÃ÷:        ¶ÁÈ¡INIÎÄ¼ş£¬²¢½«Æä±£´æµ½map½á¹¹ÖĞ
-// º¯Êı²ÎÊı:    string path INIÎÄ¼şµÄÂ·¾¶
-// ·µ »Ø Öµ:       int
+// å‡½æ•°åç§°:        ReadINI
+// è®¿é—®æƒé™:        public
+// åˆ›å»ºæ—¥æœŸ:        2017/01/05
+// åˆ› å»º äºº:      
+// å‡½æ•°è¯´æ˜:        è¯»å–INIæ–‡ä»¶ï¼Œå¹¶å°†å…¶ä¿å­˜åˆ°mapç»“æ„ä¸­
+// å‡½æ•°å‚æ•°:    string path INIæ–‡ä»¶çš„è·¯å¾„
+// è¿” å› å€¼:       int
 //************************************************************************
 int CReadIni::ReadINI(string path)
 {
@@ -51,6 +74,8 @@ int CReadIni::ReadINI(string path)
 		string::size_type equal_div_pos = 0;
 		string str_key = "";
 		string str_value = "";
+		str_line = UTF8ToGB(str_line.c_str()).c_str();
+
 		if ((str_line.npos != (left_pos = str_line.find("["))) && (str_line.npos != (right_pos = str_line.find("]"))))
 		{
 			//cout << str_line.substr(left_pos+1, right_pos-1) << endl;
@@ -81,11 +106,11 @@ int CReadIni::ReadINI(string path)
 	for (vector<ININode>::iterator itr = vec_ini.begin(); itr != vec_ini.end(); ++itr)
 	{
 		map_tmp.insert(pair<string, string>(itr->root, ""));
-	}   //ÌáÈ¡³ö¸ù½Úµã
+	}   //æå–å‡ºæ ¹èŠ‚ç‚¹
 	for (map<string, string>::iterator itr = map_tmp.begin(); itr != map_tmp.end(); ++itr)
 	{
 #ifdef INIDEBUG
-		cout << "¸ù½Úµã£º " << itr->first << endl;
+		cout << "æ ¹èŠ‚ç‚¹ï¼š " << itr->first << endl;
 #endif  //INIDEBUG
 		SubNode sn;
 		for (vector<ININode>::iterator sub_itr = vec_ini.begin(); sub_itr != vec_ini.end(); ++sub_itr)
@@ -93,7 +118,7 @@ int CReadIni::ReadINI(string path)
 			if (sub_itr->root == itr->first)
 			{
 #ifdef INIDEBUG
-				cout << "¼üÖµ¶Ô£º " << sub_itr->key << "=" << sub_itr->value << endl;
+				cout << "é”®å€¼å¯¹ï¼š " << sub_itr->key << "=" << sub_itr->value << endl;
 #endif  //INIDEBUG
 				sn.InsertElement(sub_itr->key, sub_itr->value);
 			}
@@ -104,14 +129,14 @@ int CReadIni::ReadINI(string path)
 }
 
 //************************************************************************
-// º¯ÊıÃû³Æ:        GetValue
-// ·ÃÎÊÈ¨ÏŞ:        public
-// ´´½¨ÈÕÆÚ:        2017/01/05
-// ´´ ½¨ ÈË:      
-// º¯ÊıËµÃ÷:        ¸ù¾İ¸ø³öµÄ¸ù½áµãºÍ¼üÖµ²éÕÒÅäÖÃÏîµÄÖµ
-// º¯Êı²ÎÊı:    string root     ÅäÖÃÏîµÄ¸ù½áµã
-// º¯Êı²ÎÊı:    string key      ÅäÖÃÏîµÄ¼ü
-// ·µ »Ø Öµ:       std::string     ÅäÖÃÏîµÄÖµ
+// å‡½æ•°åç§°:        GetValue
+// è®¿é—®æƒé™:        public
+// åˆ›å»ºæ—¥æœŸ:        2017/01/05
+// åˆ› å»º äºº:      
+// å‡½æ•°è¯´æ˜:        æ ¹æ®ç»™å‡ºçš„æ ¹ç»“ç‚¹å’Œé”®å€¼æŸ¥æ‰¾é…ç½®é¡¹çš„å€¼
+// å‡½æ•°å‚æ•°:    string root     é…ç½®é¡¹çš„æ ¹ç»“ç‚¹
+// å‡½æ•°å‚æ•°:    string key      é…ç½®é¡¹çš„é”®
+// è¿” å› å€¼:       std::string     é…ç½®é¡¹çš„å€¼
 //************************************************************************
 string CReadIni::GetValue(string root, string key)
 {
@@ -123,13 +148,13 @@ string CReadIni::GetValue(string root, string key)
 }
 
 //************************************************************************
-// º¯ÊıÃû³Æ:        WriteINI
-// ·ÃÎÊÈ¨ÏŞ:        public
-// ´´½¨ÈÕÆÚ:        2017/01/05
-// ´´ ½¨ ÈË:      
-// º¯ÊıËµÃ÷:        ±£´æXMLµÄĞÅÏ¢µ½ÎÄ¼şÖĞ
-// º¯Êı²ÎÊı:    string path INIÎÄ¼şµÄ±£´æÂ·¾¶
-// ·µ »Ø Öµ:       int
+// å‡½æ•°åç§°:        WriteINI
+// è®¿é—®æƒé™:        public
+// åˆ›å»ºæ—¥æœŸ:        2017/01/05
+// åˆ› å»º äºº:      
+// å‡½æ•°è¯´æ˜:        ä¿å­˜XMLçš„ä¿¡æ¯åˆ°æ–‡ä»¶ä¸­
+// å‡½æ•°å‚æ•°:    string path INIæ–‡ä»¶çš„ä¿å­˜è·¯å¾„
+// è¿” å› å€¼:       int
 //************************************************************************
 int CReadIni::WriteINI(string path)
 {
@@ -156,41 +181,41 @@ int CReadIni::WriteINI(string path)
 
 
 //************************************************************************
-// º¯ÊıÃû³Æ:        SetValue
-// ·ÃÎÊÈ¨ÏŞ:        public
-// ´´½¨ÈÕÆÚ:        2017/01/05
-// ´´ ½¨ ÈË:      
-// º¯ÊıËµÃ÷:        ÉèÖÃÅäÖÃÏîµÄÖµ
-// º¯Êı²ÎÊı:    string root     ÅäÖÃÏîµÄ¸ù½Úµã
-// º¯Êı²ÎÊı:    string key      ÅäÖÃÏîµÄ¼ü
-// º¯Êı²ÎÊı:    string value    ÅäÖÃÏîµÄÖµ
-// ·µ »Ø Öµ:       std::vector<ININode>::size_type  
+// å‡½æ•°åç§°:        SetValue
+// è®¿é—®æƒé™:        public
+// åˆ›å»ºæ—¥æœŸ:        2017/01/05
+// åˆ› å»º äºº:      
+// å‡½æ•°è¯´æ˜:        è®¾ç½®é…ç½®é¡¹çš„å€¼
+// å‡½æ•°å‚æ•°:    string root     é…ç½®é¡¹çš„æ ¹èŠ‚ç‚¹
+// å‡½æ•°å‚æ•°:    string key      é…ç½®é¡¹çš„é”®
+// å‡½æ•°å‚æ•°:    string value    é…ç½®é¡¹çš„å€¼
+// è¿” å› å€¼:       std::vector<ININode>::size_type  
 //************************************************************************
 vector<ININode>::size_type CReadIni::SetValue(string root, string key, string value)
 {
-	map<string, SubNode>::iterator itr = map_ini.find(root);  //²éÕÒ
+	map<string, SubNode>::iterator itr = map_ini.find(root);  //æŸ¥æ‰¾
 	if (map_ini.end() != itr)
 	{
 		//itr->second.sub_node.insert(pair<string, string>(key, value));
 		itr->second.sub_node[key] = value;
-	}   //¸ù½ÚµãÒÑ¾­´æÔÚÁË£¬¸üĞÂÖµ
+	}   //æ ¹èŠ‚ç‚¹å·²ç»å­˜åœ¨äº†ï¼Œæ›´æ–°å€¼
 	else
 	{
 		SubNode sn;
 		sn.InsertElement(key, value);
 		map_ini.insert(pair<string, SubNode>(root, sn));
-	}   //¸ù½Úµã²»´æÔÚ£¬Ìí¼ÓÖµ
+	}   //æ ¹èŠ‚ç‚¹ä¸å­˜åœ¨ï¼Œæ·»åŠ å€¼
 
 	return map_ini.size();
 }
 
 //************************************************************************
-// º¯ÊıÃû³Æ:        Travel
-// ·ÃÎÊÈ¨ÏŞ:        public
-// ´´½¨ÈÕÆÚ:        2017/01/05
-// ´´ ½¨ ÈË:      
-// º¯ÊıËµÃ÷:        ±éÀú´òÓ¡INIÎÄ¼ş
-// ·µ »Ø Öµ:       void
+// å‡½æ•°åç§°:        Travel
+// è®¿é—®æƒé™:        public
+// åˆ›å»ºæ—¥æœŸ:        2017/01/05
+// åˆ› å»º äºº:      
+// å‡½æ•°è¯´æ˜:        éå†æ‰“å°INIæ–‡ä»¶
+// è¿” å› å€¼:       void
 //************************************************************************
 string CReadIni::Travel()
 {
@@ -227,5 +252,4 @@ int CReadIni::GetValueCount(string sGroup)
 		}
 	}
 	return count;
-	
 }

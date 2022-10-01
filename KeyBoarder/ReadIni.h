@@ -48,7 +48,7 @@ public:
 	void Clear(){ map_ini.clear(); }    //清空
 	string Travel();                     //遍历打印INI文件
 	int GetValueCount(string sGroup);
-	
+	string UTF8ToGB(const char* str);
 private:
 	map<string, SubNode> map_ini;     //INI文件内容的存储变量
 	int count;						//返回键的数量

@@ -21,6 +21,7 @@ public:
 			if (msg.pSender->GetName() == _T("configBtn"))
 			{
 				::PostMessage(m_hwnds, WM_TITLESELECTEDCONFIG, 1, 0);
+				Close();
 			}
 			else if (msg.pSender->GetName() == _T("exitBtn"))
 			{

@@ -41,4 +41,5 @@ using namespace DuiLib;
 #define WM_TITLESELECTEDCONFIG		(WM_USER + 1003)
 #define WM_READINIFILE				(WM_USER + 1004)
 #define WM_SOFTWARELIST				(WM_USER + 1005)
+#define WM_SYSTEMTRAY_NOTIFY		(WM_USER + 1006)
 // TODO:  在此处引用程序需要的其他头文件
