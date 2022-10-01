@@ -39,6 +39,9 @@
     <ClInclude Include="ReadIni.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Title.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
