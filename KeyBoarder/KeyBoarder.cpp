@@ -5,6 +5,7 @@
 #include "Listmenu.h"
 #include <Commdlg.h>
 #include "Title.h"
+#include "../InjectDll/InjectDll.h"
 HWND g_hPareat = NULL;
 MainWnd::MainWnd()
 {
@@ -17,7 +18,9 @@ MainWnd::MainWnd()
 DWORD WINAPI ReadIniThread(LPVOID pParam)
 {
 	MainWnd* pRead = (MainWnd*)pParam;
-	pRead->WriteIniFile();
+	pRead->WriteIniFile("path1","ico1",1);
+	pRead->WriteIniFile("path2", "ico2",2);
+	pRead->WriteIniFile("path3", "ico3",3);
 	return 0;
 }
 
@@ -26,11 +29,11 @@ DWORD WINAPI OpenAllWare(LPVOID pParam)
 	MainWnd* pWare = (MainWnd*)pParam;
 	if (!pWare->m_pWareOpen->IsSelected())
 	{
-		ShellExecute(g_hPareat, _T("open"), "D:\\software\\perfectworldarena\\完美世界竞技平台.exe", "", "", SW_SHOWNORMAL);
-		ShellExecute(g_hPareat, _T("open"), "C:\\SoftWare\\WeChat\\WeChat.exe", "", "", SW_SHOWNORMAL);
-		ShellExecute(g_hPareat, _T("open"), "C:\\SoftWare\\QQMusic\\QQMusic.exe", "", "", SW_SHOWNORMAL);
-		ShellExecute(g_hPareat, _T("open"), "D:\\software\\VS2013\\Common7\\IDE\\devenv.exe", "", "", SW_SHOWNORMAL);
-		ShellExecute(g_hPareat, _T("open"), "D:\\SteamLibrary\\steamapps\\common\\Apex Legends\\r5apex.exe", "", "", SW_SHOWNORMAL);
+// 		ShellExecute(g_hPareat, _T("open"), "D:\\software\\perfectworldarena\\完美世界竞技平台.exe", "", "", SW_SHOWNORMAL);
+// 		ShellExecute(g_hPareat, _T("open"), "C:\\SoftWare\\WeChat\\WeChat.exe", "", "", SW_SHOWNORMAL);
+// 		ShellExecute(g_hPareat, _T("open"), "C:\\SoftWare\\QQMusic\\QQMusic.exe", "", "", SW_SHOWNORMAL);
+// 		ShellExecute(g_hPareat, _T("open"), "D:\\software\\VS2013\\Common7\\IDE\\devenv.exe", "", "", SW_SHOWNORMAL);
+// 		ShellExecute(g_hPareat, _T("open"), "D:\\SteamLibrary\\steamapps\\common\\Apex Legends\\r5apex.exe", "", "", SW_SHOWNORMAL);
 	}
 	
 	return 0;
@@ -115,7 +118,7 @@ DWORD WINAPI OpenFileBrowseIco(LPVOID pParam)
 		//string sIcoPath = pPath->TCHAR2STRING(szFile);
 		string sIcoPath = szFile;
 		pPath->m_sDynamAdd.push_back(sIcoPath);
-		::PostMessage(g_hPareat, WM_READINIFILE, 1, 0);
+		//::PostMessage(g_hPareat, WM_READINIFILE, 1, 0);
 		return 0;
 	}
 	else
@@ -133,12 +136,11 @@ void MainWnd::Notify(TNotifyUI & msg)
 			//OpenWare(msg);
 			if (!pOpen->IsSelected())
 			{
-				OpenWare(msg);
+				int sel = m_pTablay->GetCurSel();
+				OpenWare(msg, sel);
 			}
 			else
 			{
-				POINT pt = msg.ptMouse;
-				ClientToScreen(m_hWnd, &pt);
 				CContainerUI *pContainer = static_cast<CContainerUI*>(msg.pSender->GetParent());
 				CLabelUI* pcLabel = static_cast<CLabelUI*>(m_PaintManager.FindSubControlByName(pContainer, _T("warename")));
 				CString name = pcLabel->GetText();
@@ -147,12 +149,45 @@ void MainWnd::Notify(TNotifyUI & msg)
 		}
 		else if (msg.pSender->GetName() == _T("AllSelect"))
 		{
-			CloseHandle(CreateThread(NULL, 0, OpenAllWare, this, 0, NULL));
+			// 			int selec = m_pTablay->GetCurSel();
+			// 			switch (selec)
+			// 			{
+			// 			case 0:
+			// 				for (int i = 0; i < m_pGameList->GetCount(); i++)
+			// 				{
+			// 					CControlUI* pCont = m_pGameList->GetItemAt(i)->FindControl(FINDCONTROLPROC());
+			// 					pCont->FindControl()
+			// 				}
+			// 				break;
+			// 			}
+			 //			CloseHandle(CreateThread(NULL, 0, OpenAllWare, this, 0, NULL));
 		}
 		else if (msg.pSender->GetName() == _T("AddListBtn"))
 		{
 			CloseHandle(CreateThread(NULL, 0, OpenFileBrowse, this, 0, NULL));
 		}
+		else if (msg.pSender->GetName() == _T("select1"))
+		{
+			m_pTablay->SelectItem(0);
+			m_pSelect1->SetBkColor(0xff8EE5EE);
+			m_pSelect2->SetBkColor(0xffffffff);
+			m_pSelect3->SetBkColor(0xffffffff);
+		}
+		else if (msg.pSender->GetName() == _T("select2"))
+		{
+			m_pTablay->SelectItem(1);
+			m_pSelect2->SetBkColor(0xff8EE5EE);
+			m_pSelect1->SetBkColor(0xffffffff);
+			m_pSelect3->SetBkColor(0xffffffff);
+		}
+		else if (msg.pSender->GetName() == _T("select3"))
+		{
+			m_pTablay->SelectItem(2);
+			m_pSelect3->SetBkColor(0xff8EE5EE);
+			m_pSelect1->SetBkColor(0xffffffff);
+			m_pSelect2->SetBkColor(0xffffffff);
+		}
+
 	}
 	else if (msg.sType == DUI_MSGTYPE_MENU)
 	{
@@ -174,23 +209,106 @@ string MainWnd::TCHAR2STRING(TCHAR *STR)
 	return str;
 }
 
-
-void MainWnd::OpenWare(TNotifyUI& msg)
+void MainWnd::OpenWare(TNotifyUI& msg, int sel)
 {
 	POINT pt = msg.ptMouse;
 	ClientToScreen(m_hWnd, &pt);
 	CContainerUI *pContainer = static_cast<CContainerUI*>(msg.pSender->GetParent());
 	CLabelUI* pcLabel = static_cast<CLabelUI*>(m_PaintManager.FindSubControlByName(pContainer, _T("warename")));
- 
-	CString name = pcLabel->GetText();
-	int count = m_pWareList->GetCount();
-	//string ware = "完美对战平台";
-	for (int i = 0; i < count; i++)
+	CEditUI* pcEdit1 = static_cast<CEditUI*>(m_PaintManager.FindSubControlByName(pContainer, _T("rolledmux")));
+	int sCount = 0;
+	if (pcEdit1 != NULL)
 	{
-		if (strcmp(name.GetBuffer(), m_sExeName[i].c_str()) == 0)
+		sCount = _atoi64(pcEdit1->GetText());
+	}
+	CString name = pcLabel->GetText();
+
+	int count = 0;
+	if (sel == 0)
+	{
+		count = m_pGameList->GetCount();
+		for (int i = 0; i < count; i++)
 		{
-			ShellExecute(g_hPareat, _T("open"), m_VecPath[i].c_str(), "", "", SW_SHOWNORMAL);
-			return;
+			if (strcmp(name.GetBuffer(), m_sGameName[i].c_str()) == 0)
+			{
+				ShellExecute(g_hPareat, _T("open"), m_VecPath1[i].c_str(), "", "", SW_SHOWNORMAL);
+			}
+		}
+	}
+	else if (sel == 1)
+	{
+		count = m_pCommuncList->GetCount();
+		for (int i = 0; i < count; i++)
+		{
+			if (strcmp(name.GetBuffer(), m_sCommonName[i].c_str()) == 0)
+			{
+				ShellExecute(g_hPareat, _T("open"), m_VecPath2[i].c_str(), "", "", SW_SHOWNORMAL);
+			}
+		}
+	}
+	else if (sel == 2)
+	{
+		count = m_pFileList->GetCount();
+		for (int i = 0; i < count; i++)
+		{
+			if (strcmp(name.GetBuffer(), m_sFileName[i].c_str()) == 0)
+			{
+				ShellExecute(g_hPareat, _T("open"), m_VecPath3[i].c_str(), "", "", SW_SHOWNORMAL);
+			}
+		}
+	}
+	if (strcmp(name.GetBuffer(), "WeChat.exe") == 0)
+	{
+		string sPath = "";
+		if (sel == 0)
+		{
+			for (int i = 0; i < count; i++)
+			{
+				if (strcmp(name.GetBuffer(), m_sGameName[i].c_str()) == 0)
+				{
+					sPath = m_VecPath1[i].c_str();
+				}
+			}
+			
+		}
+		else if (sel == 1)
+		{
+			for (int i = 0; i < count; i++)
+			{
+				if (strcmp(name.GetBuffer(), m_sCommonName[i].c_str()) == 0)
+				{
+					sPath = m_VecPath2[i].c_str();
+				}
+			}
+		}
+		else if (sel == 2)
+		{
+			for (int i = 0; i < count; i++)
+			{
+				if (strcmp(name.GetBuffer(), m_sFileName[i].c_str()) == 0)
+				{
+					sPath = m_VecPath3[i].c_str();
+				}
+			}
+		}
+		if (sCount != 0)
+		{
+			StartHook();
+			//CloseHandle(CreateThread(NULL, 0, CreateNewProcess, this, 0, NULL));
+			char szCommandLine[] = "";
+			STARTUPINFO si = { sizeof(si) };
+			PROCESS_INFORMATION pi;
+			si.dwFlags = STARTF_USESHOWWINDOW; // 指定wShowWindow成员有效
+			si.wShowWindow = TRUE; // 此成员设为TRUE的话则显示新建进程的主窗
+			while (sCount)
+			{
+				sCount--;
+				BOOL bstr = CreateProcess(sPath.c_str(), szCommandLine, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
+				if (!bstr)
+				{
+					MessageBox(NULL, "打开失败，请重试！", NULL, 0);
+				}
+			}
 		}
 	}
 }
@@ -289,7 +407,7 @@ LRESULT MainWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	}
 	else if (uMsg == WM_SOFTWARELIST)
 	{
-		CloseHandle(CreateThread(NULL, 0, SoftWareList, this, 0, NULL));
+		//SoftWareList(m_pGameList);
 	}
 	else if (uMsg == WM_PAINT)
 	{
@@ -336,130 +454,179 @@ void MainWnd::WriteIniSelect()
 	{
 		ico = ptr - 6;
 	}
-	//动态添加列表
-	CListContainerElementUI* pListElement = new CListContainerElementUI();
-	CDialogBuilder  nBuilderList;
- 	if (!nBuilderList.GetMarkup()->IsValid())
-	{
-		pListElement = static_cast<CListContainerElementUI*>(nBuilderList.Create(_T("ListSy.xml"), (UINT)0, NULL, &m_PaintManager));
-	}
-	else
-	{
-		pListElement = static_cast<CListContainerElementUI*>(nBuilderList.Create((UINT)0, &m_PaintManager));
-	}
-	if (pListElement == NULL)
-		return;
-	CControlUI* pLab = static_cast<CControlUI*>(m_PaintManager.FindSubControlByName(pListElement, _T("UserIconCtl")));
-	if (pLab != NULL)
-	{
-		pLab->SetBkImage(ico.c_str());
-	}
-	pLab = NULL;
-	pLab = static_cast<CLabelUI*>(m_PaintManager.FindSubControlByName(pListElement, _T("warename")));
-	if (pLab != NULL)
-	{
-		pLab->SetText(name.c_str());
-	}
-	pLab = NULL;
-	pListElement->SetFixedWidth(250);
-	pListElement->SetFixedHeight(40);
-	int count = m_pWareList->GetCount();
-	if (!m_pWareList->AddAt(pListElement, count + 1))
-	{
-		delete pListElement;
-		return;
-	}
-
 }
-void MainWnd::WriteIniFile()
+void MainWnd::WriteIniFile(string path, string ico,int count)
 {
 	if (NULL == m_pReadIni)return;
 	m_pReadIni->ReadINI("Setting.ini");
-	m_sCountPath = m_pReadIni->GetValueCount("path");
+
+	m_sCountPath = m_pReadIni->GetValueCount(path);
 	if (m_sCountPath > 0)
 	{
 		for (int i = 0; i < m_sCountPath; i++)
 		{
 			char sz[255];
-			string path = m_pReadIni->GetValue("path", _itoa(i, sz, 10));
-			m_VecPath.push_back(path.c_str());
+			string paths = m_pReadIni->GetValue(path, _itoa(i, sz, 10));
+			if (count == 1)
+			{
+				m_VecPath1.push_back(paths.c_str());
+			}
+			else if (count == 2)
+			{
+				m_VecPath2.push_back(paths.c_str());
+			}
+			else if (count == 3)
+			{
+				m_VecPath3.push_back(paths.c_str());
+			}
 		}
 	}
-	m_sCountIco = m_pReadIni->GetValueCount("ico");
+	m_sCountIco = m_pReadIni->GetValueCount(ico);
 	if (m_sCountIco >0)
 	{
 		for (int i = 0; i < m_sCountIco; i++)
 		{
 			char sz[255];
-			string ico = m_pReadIni->GetValue("ico", _itoa(i, sz, 10));
-			m_VecIco.push_back(ico.c_str());
+			string icos = m_pReadIni->GetValue(ico, _itoa(i, sz, 10));
+			if (count == 1)
+			{
+				m_VecIco1.push_back(icos.c_str());
+			}
+			else if (count == 2)
+			{
+				m_VecIco2.push_back(icos.c_str());
+			}
+			else if (count == 3)
+			{
+				m_VecIco3.push_back(icos.c_str());
+			}
 		}
 	}
-	VecInfoInit();
+	VecInfoInit(count);
 }
 //初始化数组
-void MainWnd::VecInfoInit()
+void MainWnd::VecInfoInit(int count)
 {
 	m_vecInfo.clear();
 	listInfo info;
 	char* ptr = "";
-	for (int i = 0; i < m_VecPath.size(); i++)
+	if (count == 1)
 	{
-		char str[255];
-		strcpy(str, m_VecPath[i].c_str());
-		ptr = strrchr(str, '\\');
-		if (NULL != ptr)
+		for (int i = 0; i < m_VecPath1.size(); i++)
 		{
-			m_sExeName.push_back(ptr + 1);
-			info.text = ptr + 1;
+			char str[255];
+			strcpy(str, m_VecPath1[i].c_str());
+			ptr = strrchr(str, '\\');
+			if (NULL != ptr)
+			{
+				m_sGameName.push_back(ptr + 1);
+				info.text = ptr + 1;
+			}
+			info.ico = m_VecIco1[i];
+			m_vecInfo.push_back(info);
 		}
-		info.ico = m_VecIco[i];
-		m_vecInfo.push_back(info);
+		SoftWareList(m_pGameList);
 	}
-	::PostMessage(g_hPareat, WM_SOFTWARELIST, 1, 0);
-	
+	else if (count == 2)
+	{
+		for (int i = 0; i < m_VecPath2.size(); i++)
+		{
+			char str[255];
+			strcpy(str, m_VecPath2[i].c_str());
+			ptr = strrchr(str, '\\');
+			if (NULL != ptr)
+			{
+				m_sCommonName.push_back(ptr + 1);
+				info.text = ptr + 1;
+			}
+			info.ico = m_VecIco2[i];
+			m_vecInfo.push_back(info);
+		}
+		SoftWareList(m_pCommuncList);
+	}
+	else if (count == 3)
+	{
+		for (int i = 0; i < m_VecPath3.size(); i++)
+		{
+			char str[255];
+			strcpy(str, m_VecPath3[i].c_str());
+			ptr = strrchr(str, '\\');
+			if (NULL != ptr)
+			{
+				m_sFileName.push_back(ptr + 1);
+				info.text = ptr + 1;
+			}
+			info.ico = m_VecIco2[i];
+			m_vecInfo.push_back(info);
+		}
+		SoftWareList(m_pFileList);
+	}
 	return;
 }
-DWORD WINAPI MainWnd::SoftWareList(LPVOID pParam)
+void MainWnd::SoftWareList(CListUI* pList)
 {
-	MainWnd* pWnd = (MainWnd*)pParam;
-	if (NULL == pWnd->m_pWareList)
-		return 0;
-	for (int i = 0; i < pWnd->m_VecPath.size(); i++)
+	int count = 0;
+	if (pList == m_pGameList)
+	{
+		count = m_VecPath1.size();
+	}
+	else if (pList == m_pCommuncList)
+	{
+		count = m_VecPath2.size();
+	}
+	else if (pList == m_pFileList)
+	{
+		count = m_VecPath3.size();
+	}
+	if (NULL == pList)
+		return;
+	for (int i = 0; i < count; i++)
 	{
 		CListContainerElementUI* pListElement = new CListContainerElementUI();
 		CDialogBuilder  nBuilderList;
 		if (!nBuilderList.GetMarkup()->IsValid())
 		{
-			pListElement = static_cast<CListContainerElementUI*>(nBuilderList.Create(_T("ListSy.xml"), (UINT)0, NULL, &pWnd->m_PaintManager));
+			pListElement = static_cast<CListContainerElementUI*>(nBuilderList.Create(_T("ListSy.xml"), (UINT)0, NULL, &m_PaintManager));
 		}
 		else
 		{
-			pListElement = static_cast<CListContainerElementUI*>(nBuilderList.Create((UINT)0, &pWnd->m_PaintManager));
+			pListElement = static_cast<CListContainerElementUI*>(nBuilderList.Create((UINT)0, &m_PaintManager));
 		}
 		if (pListElement == NULL)
-			return 0;
-		CControlUI* pLab = static_cast<CControlUI*>(pWnd->m_PaintManager.FindSubControlByName(pListElement, _T("UserIconCtl")));
+			return;
+		CControlUI* pLab = static_cast<CControlUI*>(m_PaintManager.FindSubControlByName(pListElement, _T("UserIconCtl")));
 		if (pLab != NULL)
 		{
-			pLab->SetBkImage(pWnd->m_vecInfo[i].ico.c_str());
+			pLab->SetBkImage(m_vecInfo[i].ico.c_str());
 		}
 		pLab = NULL;
-		pLab = static_cast<CLabelUI*>(pWnd->m_PaintManager.FindSubControlByName(pListElement, _T("warename")));
+		pLab = static_cast<CLabelUI*>(m_PaintManager.FindSubControlByName(pListElement, _T("warename")));
 		if (pLab != NULL)
 		{
-			pLab->SetText(pWnd->m_vecInfo[i].text.c_str());
+			pLab->SetText(m_vecInfo[i].text.c_str());
 		}
 		pLab = NULL;
+		pLab = static_cast<CEditUI*>(m_PaintManager.FindSubControlByName(pListElement, _T("rolledmux")));
+		if (pLab != NULL)
+		{
+			if (strcmp(m_vecInfo[i].text.c_str(), "WeChat.exe") == 0)
+			{
+				pLab->SetVisible(true);
+			}
+			else
+			{
+				pLab->SetVisible(false);
+			}
+		}
 		pListElement->SetFixedWidth(250);
 		pListElement->SetFixedHeight(40);
-		if (!pWnd->m_pWareList->AddAt(pListElement, i))
+		if (!pList->AddAt(pListElement, i))
 		{
 			delete pListElement;
-			return -1;
+			return;
 		}
 	}
-	return 0;
+	return;
 }
 
 void MainWnd::InitWindow()
@@ -471,6 +638,13 @@ void MainWnd::InitWindow()
 	AddTrayIcon();
 	CreateThread(NULL, 0, ReadIniThread, this, 0, NULL);
 	m_pWareOpen = static_cast<COptionUI*>(m_PaintManager.FindControl(_T("wareOpen")));
-	m_pWareList = static_cast<CListUI*>(m_PaintManager.FindControl(_T("softwareList")));
+	m_pGameList = static_cast<CListUI*>(m_PaintManager.FindControl(_T("gameList")));
+	m_pCommuncList = static_cast<CListUI*>(m_PaintManager.FindControl(_T("communcList")));
+	m_pFileList = static_cast<CListUI*>(m_PaintManager.FindControl(_T("fileList")));
+	m_pTablay = static_cast<CTabLayoutUI*>(m_PaintManager.FindControl(_T("switch")));
+	m_pSelect1 = static_cast<CButtonUI*>(m_PaintManager.FindControl(_T("select1")));
+	m_pSelect2 = static_cast<CButtonUI*>(m_PaintManager.FindControl(_T("select2")));
+	m_pSelect3 = static_cast<CButtonUI*>(m_PaintManager.FindControl(_T("select3")));
+	
 	
 }
