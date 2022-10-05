@@ -7,16 +7,40 @@
 	<VerticalLayout width="250" height="500" bkcolor="#ffDCDCDC">
 		<HorizontalLayout float="true" pos="0,0,0,0" width="250" height="475" bkcolor="#ffffffff">
 			<Control float="true" pos="5,5,0,0" width="54" height="54" bkimage="keyMon\icon1.png" />
-			<Button name="AllSelect" float="true" pos="200,50,246,62" width="30" height="12" font="1" text="全选" textcolor="#ff000000" texthotcolor="#ff00FF00" />
-			<List name="softwareList" float="true" pos="0,65,0,0" width="250" height="449" itemtextcolor="#ffffffff" itemhotbkcolor="#FFE9F5FF" itemdisabledtextcolor="#FFCCCCCC" vscrollbar="true" hscrollbar="false" bordersize="0" font="1" bkcolor="#ffE0E0E0" headerbkimage="keyMon\arm_L.png" menu="true">
-				<ListHeader>
-					<ListHeaderItem text="WeChat:aaron820ht" width="250" minwidth="250" dragable="false" font="1" textcolor="#ff000000" />
-				</ListHeader>
-			</List>
+			<Button name="AllSelect" float="true" pos="200,50,230,65" width="30" height="15" font="1" text="全选" textcolor="#ff000000" texthotcolor="#ff00FF00" />
+			<Control float="true" pos="0,70,0,0" width="250" height="2" bordersize="1" bordercolor="#ff8EE5EE" bkcolor="#ff8EE5EE" />
+			<Button name="select1" float="true" pos="0,77,0,0" width="50" height="18" font="1" text="游戏" textcolor="#ff000000" texthotcolor="#ffffffff" hotbkcolor="#ff8EE5EE" bordersize="1" bordercolor="#ff000000" borderround="5,5" />
+			<Button name="select2" float="true" pos="70,77,0,0" width="50" height="18" font="1" text="通讯" textcolor="#ff000000" texthotcolor="#ffffffff" hotbkcolor="#ff8EE5EE" bordersize="1" bordercolor="#ff000000" borderround="5,5" />
+			<Button name="select3" float="true" pos="140,77,0,0" width="50" height="18" font="1" text="文件" textcolor="#ff000000" texthotcolor="#ffffffff" hotbkcolor="#ff8EE5EE" bordersize="1" bordercolor="#ff000000" borderround="5,5" />
+			
+			<TabLayout name="switch" float="true" pos="0,100,0,0" width="250" height="429">
+				<VerticalLayout>
+					<List name="gameList" float="true" pos="0,0,0,0" width="250" height="449" itemtextcolor="#ffffffff" itemhotbkcolor="#FFE9F5FF" itemdisabledtextcolor="#FFCCCCCC" vscrollbar="true" hscrollbar="false" bordersize="0" font="1" bkcolor="#ffE0E0E0" headerbkimage="keyMon\arm_L.png" menu="true">
+						<ListHeader visible="false">
+							<ListHeaderItem width="250" minwidth="250" dragable="false" font="1" textcolor="#ff000000" />
+						</ListHeader>
+					</List>
+				</VerticalLayout>
+					
+				<VerticalLayout>
+				<List name="communcList" float="true" pos="0,0,0,0" width="250" height="449" itemtextcolor="#ffffffff" itemhotbkcolor="#FFE9F5FF" itemdisabledtextcolor="#FFCCCCCC" vscrollbar="true" hscrollbar="false" bordersize="0" font="1" bkcolor="#ffE0E0E0" headerbkimage="keyMon\arm_L.png" menu="true">
+						<ListHeader visible="false">
+							<ListHeaderItem width="250" minwidth="250" dragable="false" font="1" textcolor="#ff000000" />
+						</ListHeader>
+					</List>
+				</VerticalLayout>
+				<VerticalLayout>
+				<List name="fileList" float="true" pos="0,0,0,0" width="250" height="449" itemtextcolor="#ffffffff" itemhotbkcolor="#FFE9F5FF" itemdisabledtextcolor="#FFCCCCCC" vscrollbar="true" hscrollbar="false" bordersize="0" font="1" bkcolor="#ffE0E0E0" headerbkimage="keyMon\arm_L.png" menu="true">
+						<ListHeader visible="false">
+							<ListHeaderItem width="250" minwidth="250" dragable="false" font="1" textcolor="#ff000000" />
+						</ListHeader>
+					</List>
+				</VerticalLayout>
+			</TabLayout>
 			<Label name="myName" float="true" text="启动器" align="center" pos="60,26,160,46" width="100" height="20" bkcolor="#ffffffff" textcolor="#ff000000" font="1" />
 		</HorizontalLayout>
-		<VerticalLayout float="true" pos="0,437,0,0" width="250" height="25">
-			<Button name="AddListBtn" float="true" pos="212,0,0,0" width="25" height="25" normalimage="keyMon\addList_info.png" bkimage="keyMon\addList_info.png" />
+		<VerticalLayout float="true" pos="0,438,0,0" width="250" height="25">
+			<Button name="AddListBtn" float="true" pos="209,0,0,0" width="25" height="25" normalimage="keyMon\addList_info.png"/>
 		</VerticalLayout>
 	</VerticalLayout>
 </Window>
